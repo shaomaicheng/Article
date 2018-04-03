@@ -1,110 +1,130 @@
-# GreenDao源码
-
-DaoMaster、具体的Dao 和 DaoSession对象为greedao生成的代码
-从平时的使用可以看出他们的作用
-* DaoMaster
-	`GreenDao的总入口，负责整个库的运行，实现了SqliteOpenHelper`
-* DaoSession
-	`会话层，操作Dao的具体对象，包括DAO对象的注册`
-* xxEntity
-	`实体类，和表内容一一对应`
-* xxDao
-	`生成的DAO对象，进行具体的数据库操作`
-	
-这几个类的关系如下UML图:
-![](https://github.com/shaomaicheng/Article/blob/master/imgs/GreenDAO.png?raw=true)
-
-Dao对象需要依赖DaoConfig对象
-
-```java
-public DaoConfig(Database db, Class<? extends AbstractDao<?, ?>> daoClass) 
+Last login: Mon Apr  2 20:57:53 on ttys000
+➜  ~ ls
+Android-Project Applications    Documents       Library         Music           Public          go_pro
+Android-demo    Desktop         Downloads       Movies          Pictures        go
+➜  ~ mkdir https://github.com/shaomaicheng/Article.gi
+➜  ~ mkdir article
+➜  ~ cd a
+cd: no such file or directory: a
+➜  ~ cd article
+➜  article ls
+➜  article git clone https://github.com/shaomaicheng/Article.git
+Cloning into 'Article'...
+warning: You appear to have cloned an empty repository.
+➜  article ls
+Article
+➜  article cd Article
+➜  Article git:(master) ls
+➜  Article git:(master) mkdir imgs
+➜  Article git:(master) cd ..
+➜  article ls
+Article
+➜  article cd ..
+➜  ~ ls
+Android-Project Applications    Documents       Library         Music           Public          go
+Android-demo    Desktop         Downloads       Movies          Pictures        article         go_pro
+➜  ~ cd Applications
+➜  Applications cd //
+➜  / cd ..
+➜  / cd ~/article
+➜  article l.s
+zsh: command not found: l.s
+➜  article ls
+Article
+➜  article cd Article
+➜  Article git:(master) ls
+imgs
+➜  Article git:(master) cd ~/Desktop
+➜  Desktop ls
+android-hub golang-hub  snapshot.py sqlite
+➜  Desktop ls -al
+total 32
+drwx------@  7 chenglei  staff    224  4  1 19:45 .
+drwxr-xr-x+ 41 chenglei  staff   1312  4  3 20:21 ..
+-rw-r--r--@  1 chenglei  staff  10244  4  1 16:28 .DS_Store
+drwxr-xr-x   6 chenglei  staff    192  4  1 18:40 android-hub
+drwxr-xr-x   3 chenglei  staff     96  4  1 21:58 golang-hub
+-r-xr-xr-x@  1 chenglei  staff    542  8  9  2017 snapshot.py
+drwxr-xr-x   3 chenglei  staff     96  3 31 18:18 sqlite
+➜  Desktop cd ..
+➜  ~ ls
+Android-Project Applications    Documents       Library         Music           Public          go
+Android-demo    Desktop         Downloads       Movies          Pictures        article         go_pro
+➜  ~ cd ~
+➜  ~ cd Desktop
+➜  Desktop ls
 ```
+android-hub golang-hub  snapshot.py sqlite
+➜  Desktop cd ../Downloads/
+➜  Downloads ls
+GreenDAO.png                        IntelliJIDEALicenseServer           下载组件SDk.pdf                     白话深度学习与TensorFlow.pdf
+➜  Downloads mv GreenDAO.png ~/article/Article/imgs
+➜  Downloads cd ~/article/Article/imgs
+➜  imgs git:(master) ✗ ls
+GreenDAO.png
+➜  imgs git:(master) ✗ cd ..
+➜  Article git:(master) ✗ ls
+imgs
+➜  Article git:(master) ✗ git add .
+➜  Article git:(master) ✗ git push
+error: src refspec refs/heads/master does not match any.
+error: failed to push some refs to 'https://github.com/shaomaicheng/Article.git'
+➜  Article git:(master) ✗ git commit -m "添加文档"
+[master (root-commit) 6537b9e] 添加文档
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 imgs/GreenDAO.png
+➜  Article git:(master) git push
+Username for 'https://github.com': shaomaicheng
+Password for 'https://shaomaicheng@github.com':
+Counting objects: 4, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (4/4), 56.07 KiB | 14.02 MiB/s, done.
+Total 4 (delta 0), reused 0 (delta 0)
+To https://github.com/shaomaicheng/Article.git
+ * [new branch]      master -> master
+➜  Article git:(master) ls
+imgs
+➜  Article git:(master) ls
+imgs
+➜  Article git:(master) cd ..
+➜  article ls
+Article
+➜  article mkdir GreenDAO
+➜  article ls
+Article  GreenDAO
+➜  article cd GreenDAO
+➜  GreenDAO qls
+zsh: command not found: qls
+➜  GreenDAO ls
+➜  GreenDAO ls
+➜  GreenDAO touch greendao.md
+➜  GreenDAO vim greendao.md
+➜  GreenDAO git add .
+fatal: Not a git repository (or any of the parent directories): .git
+➜  GreenDAO lks
+zsh: command not found: lks
+➜  GreenDAO cd ..
+➜  article cd ..
+➜  ~ cd article
+➜  article git add .
+fatal: Not a git repository (or any of the parent directories): .git
+➜  article cd Article
+➜  Article git:(master) git add .
+➜  Article git:(master) git commit -m "GreenDAO基础用法源码解析"
+On branch master
+Your branch is up-to-date with 'origin/master'.
 
-DaoConfig对象需要传入具体的DaoClass类型
+nothing to commit, working tree clean
+➜  Article git:(master) gp
+Everything up-to-date
+➜  Article git:(master) git pull
+Already up-to-date.
+➜  Article git:(master) git commit -m "GreenDAO基础用法源码解析"
+On branch master
+Your branch is up-to-date with 'origin/master'.
 
-```java
-reflectProperties(Class<? extends AbstractDao<?, ?>> daoClass))
-```
-
-获取DAO里面的Properties 所有static或者public字段
-```java
-pkProperty = pkColumns.length == 1 ? lastPkProperty : null;
-            statements = new TableStatements(db, tablename, allColumns, pkColumns);
-
-            if (pkProperty != null) {
-                Class<?> type = pkProperty.type;
-                keyIsNumeric = type.equals(long.class) || type.equals(Long.class) || type.equals(int.class)
-                        || type.equals(Integer.class) || type.equals(short.class) || type.equals(Short.class)
-                        || type.equals(byte.class) || type.equals(Byte.class);
-            } else {
-                keyIsNumeric = false;
-            }
-```
-
-这里会获取所有的数据库字段，顺便判断表主键是否是数字类型
-
-
-## AbstractDao
-此处分析几个常用的方法
-* insert 插入数据
-```java
-public long insert(T entity) {
-        return executeInsert(entity, statements.getInsertStatement(), true);
-    }
-```
-
-内部逻辑伪代码:
-```java
-if (db.isDbLockedByCurrentThread()) {
-		// 数据库连接被其他占用
-            rowId = insertInsideTx(entity, stmt);
-        } else {
-            // Do TX to acquire a connection before locking the stmt to avoid deadlocks (开启事务防止死锁)
-            db.beginTransaction();
-            try {
-                rowId = insertInsideTx(entity, stmt);
-                db.setTransactionSuccessful();
-            } finally {
-                db.endTransaction();
-            }
-        }
-        if (setKeyAndAttach) {
-            updateKeyAfterInsertAndAttach(entity, rowId, true);
-        }
-```
-
-*  update 更新数据
-```java
-public void update(T entity) 
-```
-
-update的源码大概为
-```java
-assertSinglePk();  //判断是否只有一个主键
-DatabaseStatement stmt = statements.getUpdateStatement();
-if (db.isDbLockedByCurrentThread()) {
-            synchronized (stmt) {
-                if (isStandardSQLite) {
-                    updateInsideSynchronized(entity, (SQLiteStatement) stmt.getRawStatement(), true);
-                } else {
-                    updateInsideSynchronized(entity, stmt, true);
-                }
-            }
-        } else {
-            // Do TX to acquire a connection before locking the stmt to avoid deadlocks
-            db.beginTransaction();
-            try {
-                synchronized (stmt) {
-                    updateInsideSynchronized(entity, stmt, true);
-                }
-                db.setTransactionSuccessful();
-            } finally {
-                db.endTransaction();
-            }
-        }
-```
-
-关注updateInsideSynchronized方法
+nothing to commit, working tree clean
 ```java
 bindValues(stmt, entity);
         int index = config.allColumns.length + 1;
@@ -135,7 +155,7 @@ where id = '?'
 会通过QueryBuilder构造查询条件，在QueryBuilder中list方法获取数据
 ```java
 public List<T> list() {
-	return build().list();
+        return build().list();
 }
 ```
 
@@ -149,6 +169,8 @@ public List<T> list() {
 
 会走到AbstractDao类的loadAllFromCursor方法
 ```java
+if (cursor.moveToFirst()) {
+            if (identityScope != null) {
 if (cursor.moveToFirst()) {
             if (identityScope != null) {
                 identityScope.lock();
@@ -173,11 +195,130 @@ if (cursor.moveToFirst()) {
 
 会走到loadCurrent方法
 ```java
- final protected T loadCurrent(Cursor cursor, int offset, boolean lock) 
+ final protected T loadCurrent(Cursor cursor, int offset, boolean lock)
 ```
 
 此处可以关于IdentityScope的代码
 ```java
+T entity = lock ? identityScopeLong.get2(key) : identityScopeLong.get2NoLock(key);
+            if (entity != null) {
+                return entity;
+            } else {
+                entity = readEntity(cursor, offset);
+                attachEntity(entity);
+                if (lock) {
+                    identityScopeLong.put2(key, entity);
+                } else {
+                    identityScopeLong.put2NoLock(key, entity);
+                }
+                return entity;
+            }
+```
+
+可以发现GreenDao对于数据做了一次内存的缓存，每次查询的时候会从IdentityScope的map 中get一次数据。如果map中缓存拿到了，就使用缓存作为查询的结果。
+* delete 删除的逻辑和增改查大致一样
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+                    identityScope.unlock();
+        }
+```
+
+会走到loadCurrent方法
+```java
+ final protected T loadCurrent(Cursor cursor, int offset, boolean lock)
+```
+
+此处可以关于IdentityScope的代码
+```javda
 T entity = lock ? identityScopeLong.get2(key) : identityScopeLong.get2NoLock(key);
             if (entity != null) {
                 return entity;
@@ -213,5 +354,49 @@ public void clearIdentityScope() {
         }
     }
 ```
+        } else if (key == null) {
+            throw new DaoException("Cannot update entity without key - was it inserted before?");
+        } else {
+            stmt.bindString(index, key.toString());
+        }
+        stmt.execute();
+        attachEntity(key, entity, lock);
+```
+和insert方法类似，添加了主键判断必须存在key的逻辑
+其中添加了
+```java
+int index = config.allColumns.length + 1;
+```
+这个index bind的字段是update的条件语句，和id进行绑定
+换成sql语句就是
+```sql
+where id = '?'
+```
 
-* delete 删除的逻辑和增改查大致一样
+* select 查询操作
+查询的代码和insert、update大致流程一致
+会通过QueryBuilder构造查询条件，在QueryBuilder中list方法获取数据
+```java
+public List<T> list() {
+        return build().list();
+}
+```
+
+```java
+public List<T> list() {
+   checkThread();
+   Cursor cursor = dao.getDatabase().rawQuery(sql, parameters);
+   return daoAccess.loadAllAndCloseCursor(cursor);
+}
+```
+
+会走到AbstractDao类的loadAllFromCursor方法
+```java
+if (cursor.moveToFirst()) {
+            if (identityScope != null) {
+                identityScope.lock();
+                identityScope.reserveRoom(count);
+            }
+
+            try {
+                if (!useFastCursor && window != null && identityScope != null) {
