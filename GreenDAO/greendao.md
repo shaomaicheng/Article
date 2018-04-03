@@ -197,9 +197,24 @@ T entity = lock ? identityScopeLong.get2(key) : identityScopeLong.get2NoLock(key
 * **delete 删除的逻辑和增改查大致一样**
 
 ## GreenDAO缓存
-在上面query的源码中可以发现GreenDAO对于数据做了一次内存的缓存，每次查询的时候会从IdentityScope的map 中get一次数据。如果map中缓存拿到了，就使用缓存作为查询的结果。
+在上面query的源码中可以发现GreenDAO对于数据做了一次内存的缓存，每次写数据库的时候会从IdentityScope的map 中put一次数据。每次读数据库的时候会从IdentityScope的map中get一次数据。如果map中缓存拿到了，就使用缓存作为查询的结果。
 
-`关于数据库缓存的特性，我们需要视业务情况而定，如果需要拿到最新的数据库信息，可以使用DaoSession的clear方法删除缓存，源码如下`
+在查询和更新数据的时候会执行
+```java
+attachEntity(K key, T entity, boolean lock)
+```
+方法，具体逻辑如下
+```java
+if (identityScope != null && key != null) {
+            if (lock) {
+                identityScope.put(key, entity);
+            } else {
+                identityScope.putNoLock(key, entity);
+            }
+        }
+```
+
+`关于数据库缓存的特性，我们需要视业务情况而定，在网上还是能搜到GreenDAO查询数据没有拿到最新结果的bug， 如果出现这个bug且需要拿到最新的数据库信息，可以使用DaoSession的clear方法删除缓存，源码如下`
 
 ```java
 //DaoSession
