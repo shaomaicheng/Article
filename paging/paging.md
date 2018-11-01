@@ -227,8 +227,7 @@ loadAroundInternal(index);
 
 ¼ÌÐø£¬
 
-[Í¼Æ¬ÉÏ´«Ê§°Ü...(image-5d71c7-1541091675146)]
-)
+![image](http://upload-images.jianshu.io/upload_images/1523772-4e6c31deedf40e54?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ```java
 if (mAppendItemsRequested > 0) {
