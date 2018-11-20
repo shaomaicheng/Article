@@ -13,7 +13,7 @@
 
 代码如下：
 
-![image](../imgs/jetpack/jetpack_img_1.png)
+![image](https://github.com/shaomaicheng/Article/blob/master/imgs/jetpack/jetpack_img_1.png?raw=true)
 
 在团队人员增加的时候，如果在新同学入职的时候不强调这个规则的时候，很容易就会出现线上的 `NullPointException` 异常
 
@@ -22,7 +22,7 @@
 
 在 mvp 中，我们抽象出了一些基础类， 例如 `BasePresenterActivity` 和 `BaseActivity`
 
-![image](../imgs/jetpack/jetpack_img_2.png)
+![image](https://github.com/shaomaicheng/Article/blob/master/imgs/jetpack/jetpack_img_2.png?raw=true)
 
 
 在 `onCreate` 中，我们可以看到有不少代码逻辑，在未来的开发中，我们可能需要其他的相似功能的 Activity， 或者在某些 Fragment 中，我们需要类似的逻辑。但是，新上手的同学可能只想关心我需要复制哪些 Activity 相关的逻辑，或者只想关心和生命周期相关的逻辑，这时候，Activity 和生命周期的逻辑就耦合在了一起，终究会变得难以维护。
@@ -65,7 +65,7 @@ abstract class BaseActivity: AppCompatActivity() {
 
 `BaseActivityLifecycle` 的代码如下：
 
-![image](../imgs/jetpack/jetpack_img_3.png)
+![image](https://github.com/shaomaicheng/Article/blob/master/imgs/jetpack/jetpack_img_3.png?raw=true)
 
 目前，Activity内部的 lifecycle 包含了 `EventBus` 和我们自己的埋点库。我们可以一目了然的看到我们的基类 Activity 在每个生命周期中有哪些三方库或者二方库需要初始化和销毁。如果某个同学需要重构 BaseFragment 类，可以直接复用这个 lifecycle 的代码，也不用担心自己写漏了什么 lifecycle 相关的初始化。
 
@@ -81,16 +81,16 @@ Manage UI-related data in a lifecycle-conscious way
 
 从文档里面我们可以看到 `ViewModel` 的基本用法：
 
-![image](http://note.youdao.com/yws/res/421/77BE98D29BE54CEEA1EB1CC0449BCABE)
+![image](https://github.com/shaomaicheng/Article/blob/master/imgs/jetpack/jetpack_img_4.png?raw=true)
 
 
-![image](http://note.youdao.com/yws/res/423/163CA626809243AAA2CB8C77F55C885A)
+![image](https://github.com/shaomaicheng/Article/blob/master/imgs/jetpack/jetpack_img_5.png?raw=true)
 
 
 从官网的这张图我们也可以看到，`ViewModel` 会随着 view 对象的 `onDestory` 执行 `onCleared` 方法销毁
 
 
-![image](http://note.youdao.com/yws/res/429/84DD610CBA3644E8884F7AD5E5D16FAD)
+![image](https://github.com/shaomaicheng/Article/blob/master/imgs/jetpack/jetpack_img_6.png?raw=true)
 
 
 
@@ -106,7 +106,7 @@ ViewModelProviders.of(this).get(ModelClass::class.java)
 
 我们在团队内的约定是，为了较复杂逻辑的抽象，我们不限制 `Activity` 和 `ViewModel` 的对应关系。一个 `Activity` 中可以持有多个 `ViewModel` 对象。但是，在很多逻辑不算很复杂的页面，可能仍然只是一个 `Activity` 需要一个`ViewModel` 就够了，所以我们也写封装了一个对应的基础类。
 
-![image](http://note.youdao.com/yws/res/463/27DCD080854E44379E549F9C1FD8D87C)
+![image](https://github.com/shaomaicheng/Article/blob/master/imgs/jetpack/jetpack_img_7.png?raw=true)
 
 其中：
 
@@ -116,7 +116,7 @@ ViewModelProviders.of(this).get(ModelClass::class.java)
 
 `ViewModel` 的初始化如下图：
 
-![image](http://note.youdao.com/yws/res/472/FA1B50EDE1F84ABDA36A0036BD024B61)
+![image](https://github.com/shaomaicheng/Article/blob/master/imgs/jetpack/jetpack_img_8.png?raw=true)
 
 
 
@@ -163,13 +163,13 @@ mViewModel.myLiveData?.observer{v->
 在拥有了 `View`, `ViewModel`, `LiveData` 之后，我们梳理了我们的数据流向图
 
 
-![image](http://note.youdao.com/yws/res/500/6BB816777DB54F16B3C35040261908AE)
+![image](https://github.com/shaomaicheng/Article/blob/master/imgs/jetpack/jetpack_img_9.png?raw=true)
 
 这里我们可以看到，数据的传递方向看其实是一个单向数据流。不会有数据从 UI 层到逻辑层互相扔来扔去的情况。即使代码多了，我们也只需要关注单向的数据变化就能轻松了解到逻辑。代码也更加容易维护。
 
 类比一下，我们也可以发现，这个架构，和前端 `React` + `Redux` 的 `Flux` 架构也十分相似。
 
-![image](http://note.youdao.com/yws/res/507/FC2080429C724E839CE108558AE3689B)
+![image](https://github.com/shaomaicheng/Article/blob/master/imgs/jetpack/jetpack_img_10.png?raw=true)
 
 实际上，在 `Jetpack` 的源码中，我们也可以看见类似 `Store` 和 `Dispatcher` 的概念。虽然在业务代码的结构我们仍然和 MVP 没有很大差异，但是从整体的角度看，我们的架构更像是 `Flux`
 
@@ -195,15 +195,15 @@ mViewModel.myLiveData?.observer{v->
 
 在相册选择中，我们每页读取一定量的图片，避免一次性加载所有本地图片可能出现的卡顿
 
-![image](http://note.youdao.com/yws/res/541/37D42B4C8FB945469C121821A0B1CF09)
+![image](https://github.com/shaomaicheng/Article/blob/master/imgs/jetpack/jetpack_img_11.png?raw=true)
 
 配置相对应的配置
 
-![image](http://note.youdao.com/yws/res/544/3AA71474F05440BC8AA25A0D9866327C)
+![image](https://github.com/shaomaicheng/Article/blob/master/imgs/jetpack/jetpack_img_12.png?raw=true)
 
 到这里我们就实现了一个很优雅的列表分页加载，我们可以画出 `Paging` 简单的架构图
 
-![image](http://note.youdao.com/yws/res/549/5B7D0023B1D648B1A00D26B72DE069BF)
+![image](https://github.com/shaomaicheng/Article/blob/master/imgs/jetpack/jetpack_img_13.png?raw=true)
 
 在一般情况下，我们最原始的方式，列表 UI 所在的部分，是需要知道数据的来源等逻辑部分。`Paging`实际是抽象了列表分页加载这个行为的 `Presenter` 层及其下游处理。这种模式，业务的编写者，可以把 UI 部分的代码模板化， 只需要关心业务逻辑，并且把业务逻辑中的数据获取写在 DataSource 中，使分页加载的操作解耦程度更高。
 
