@@ -29,19 +29,18 @@ try {
 
 
 
-![](https://user-gold-cdn.xitu.io/2019/3/1/16934e6e63bac91a?w=2118&h=1198&f=png&s=453886)
+![](https://raw.githubusercontent.com/shaomaicheng/Article/master/imgs/activitylaunch/1.jpeg)
 
 这部分我们可以看到根据 intent 解析除了需要的信息，并根据信息去获取了跳转 Activity 的系统权限。
 
 
-![](https://user-gold-cdn.xitu.io/2019/3/1/16934e71177687e5?w=1668&h=1980&f=png&s=646376)
+![](https://raw.githubusercontent.com/shaomaicheng/Article/master/imgs/activitylaunch/2.jpeg)
 
 这一部分代码，则对 intent 进行了处理和判断，我们基本可以省略这部分非关键逻辑
 
 最终我们会走到 `startActivityLocked` 方法，并走到 `startActivity`
 
-
-![](https://user-gold-cdn.xitu.io/2019/3/1/16934e73e605d7a4?w=1892&h=1930&f=png&s=584033)
+![](https://raw.githubusercontent.com/shaomaicheng/Article/master/imgs/activitylaunch/3.jpeg)
 
 
 这里我们会看到很多对于不同的 `ActivityManager` 的 状态进行逻辑判断和处理，这里不影响我们的关键流程，我们可以继续往下分析, 分析 `doPendingActivityLaunchesLocked` 方法
@@ -63,17 +62,17 @@ mService.mWindowManager.deferSurfaceLayout();
 查看 ` startActivityUnchecked` : 这里代码逻辑比较长，我们查看 ` ActivityStackSupervisor`的`.resumeFocusedStackTopActivityLocked` 方法
 
 
-![](https://user-gold-cdn.xitu.io/2019/3/1/16934e77b7ca2b73?w=1858&h=890&f=png&s=246794)
+![](https://raw.githubusercontent.com/shaomaicheng/Article/master/imgs/activitylaunch/4.jpeg)
 
 继续查看 `resumeTopActivityUncheckedLocked` 方法, 跟踪到 `resumeTopActivityInnerLocked` 方法:
 
 
-![](https://user-gold-cdn.xitu.io/2019/3/1/16934e79a3ae9658?w=1998&h=512&f=png&s=163518)
+![](https://raw.githubusercontent.com/shaomaicheng/Article/master/imgs/activitylaunch/5.jpeg)
 
 这边我们查看需要 restart 这个 Activity 的简单情况，会调用 `ActivityStackSupervisor` 的 `startSpecificActivityLocked` 方法
 
 
-![](https://user-gold-cdn.xitu.io/2019/3/1/16934e90f5714fa4?w=1774&h=1336&f=png&s=403583)
+![](https://raw.githubusercontent.com/shaomaicheng/Article/master/imgs/activitylaunch/6.jpeg)
 
 这里我们找到了逻辑的关键：如果 app的线程和进程都存在，我们会执行 `realStartActivityLocked` 方法。否则，会继续进行 IPC 通知 `ActivityManagerService` 去执行 `startProcessLocked`
 
@@ -87,7 +86,7 @@ mService.mWindowManager.deferSurfaceLayout();
 
 
 
-![](https://user-gold-cdn.xitu.io/2019/3/1/16934e982c99c769?w=1748&h=1222&f=png&s=496703)
+![](https://raw.githubusercontent.com/shaomaicheng/Article/master/imgs/activitylaunch/7.jpeg)
 
 我们可以找到这段代码的关键逻辑，我们先分析下 `app.thread` 是什么。跟踪进去会发现是一个 `IApplicationThread`,  可以发现这里又是一个 aidl， 最后我们可以找到 `ApplicationThread` ，
 
@@ -98,7 +97,7 @@ private class ApplicationThread extends IApplicationThread.Stub
 这是 `ActivityThread` 的一个静态内部类，ActivtyThread和启动Activity 相关，那么这个类就应该是和 Application 启动相关。
 
 
-![](https://user-gold-cdn.xitu.io/2019/3/1/16934e9ba7de7086?w=1924&h=1508&f=png&s=418881)
+![](https://raw.githubusercontent.com/shaomaicheng/Article/master/imgs/activitylaunch/8.jpeg)
 
 我们会发现最后其实发了一个message 到消息队列中，找到 `H` 这个 handler 的 `handleMessage` 方法
 
@@ -126,9 +125,9 @@ activity = mInstrumentation.newActivity(cl, component.getClassName(), r.intent);
 这里，我们发现这里通过 `Insteumentation` new 了一个 Activity
 
 
-![](https://user-gold-cdn.xitu.io/2019/3/1/16934e9f56b91e58?w=1742&h=1808&f=png&s=533817)
+![](https://raw.githubusercontent.com/shaomaicheng/Article/master/imgs/activitylaunch/9.jpeg)
 
-![](https://user-gold-cdn.xitu.io/2019/3/1/16934ea17f08cc40?w=1892&h=1124&f=png&s=296494)
+![](https://raw.githubusercontent.com/shaomaicheng/Article/master/imgs/activitylaunch/10.jpeg)
 
 通过以上代码，我们还可以发现 new 出 Activity 后的几个步骤
 1. attach Activity， 目测会有初始化 window 的流程
@@ -144,14 +143,14 @@ activity = mInstrumentation.newActivity(cl, component.getClassName(), r.intent);
 下面来分析我们的第二种情况，我们可以跟踪到 `ActivityManagerService` 的 `startProcessLocked 方法， 这个方法最终会走到自己的重载方法:
 
 
-![](https://user-gold-cdn.xitu.io/2019/3/1/16934ea361ef03c5?w=1682&h=446&f=png&s=167708)
+![](https://raw.githubusercontent.com/shaomaicheng/Article/master/imgs/activitylaunch/11.jpeg)
 
 如果我们启动的是一个 webview service,  则会走到 `startWebView` ，这里我们不考虑，所以我们分析的是 `Process.start` 这种初始化一个普通进程的情况。
 
 
 这个方法最后调用了 `ZygoteProcess` 的 `start` 方法
 
-![](https://user-gold-cdn.xitu.io/2019/3/1/16934ea4d7ed9ade?w=1842&h=1928&f=png&s=529322)
+![](https://raw.githubusercontent.com/shaomaicheng/Article/master/imgs/activitylaunch/12.jpeg)
 
 这里我们也可以大致分析出来，这里就是在通过 socket 通信请求 `Zygote` 进程 fork 一个子进程，作为新的 APP 进程，具体流程本篇文章暂时不做深究。
 
@@ -181,7 +180,7 @@ if (normalMode) {
 大概的关系如下图所示：
 
 
-![](https://user-gold-cdn.xitu.io/2019/3/1/16934ea80238244d?w=2228&h=1622&f=png&s=337593) 
+![](https://raw.githubusercontent.com/shaomaicheng/Article/master/imgs/activitylaunch/13.jpeg)
 
 
 #### 后续
